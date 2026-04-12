@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letter for You 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:#0f0f1a;
+color:white;
+font-family:'Poppins';
+overflow:hidden;
+}
+
+/* Center */
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+}
+
+/* Start screen */
+#start{
+font-family:'Great Vibes';
+font-size:42px;
+cursor:pointer;
+}
+
+/* Typing */
+#text{
+font-family:'Great Vibes';
+font-size:24px;
+line-height:1.7;
+max-width:650px;
+white-space:pre-line;
+}
+
+/* Hidden */
+.hidden{display:none;}
+
+/* Envelope */
+.envelope{
+width:300px;
+height:200px;
+background:#ff7aa2;
+border-radius:8px;
+cursor:pointer;
+position:relative;
+margin:auto;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+.envelope:before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:#ff9eb5;
+clip-path:polygon(0 0,50% 60%,100% 0);
+transition:0.6s;
+}
+
+.open:before{
+transform:rotateX(180deg);
+}
+
+/* Buttons */
+button{
+padding:12px 25px;
+border:none;
+border-radius:25px;
+cursor:pointer;
+margin:10px;
+font-size:16px;
+}
+
+#yes{background:#ff4d88;color:white;}
+#no{background:#ccc;position:absolute;}
+
+/* Popup */
+.popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+color:black;
+padding:20px;
+border-radius:10px;
+display:none;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Hearts */
+.heart{
+position:absolute;
+color:#ff4d88;
+animation:float 5s linear infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(100vh);opacity:0;}
+50%{opacity:1;}
+100%{transform:translateY(-10vh);opacity:0;}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Start Screen -->
+<div id="start" class="center">
+Letter for you 💌<br><br>
+<small>Tap to begin</small>
+</div>
+
+<!-- Letter Section -->
+<div id="letter" class="center hidden">
+<div id="text"></div>
+<br><br>
+<div class="envelope" id="envelope"></div>
+<p>Click the envelope</p>
+</div>
+
+<!-- Question -->
+<div id="question" class="center hidden">
+<h1 style="font-family:Great Vibes;">Hey cutie 😊</h1>
+<p>Can we be friends?</p>
+
+<div style="position:relative;">
+<button id="yes">Yes 💖</button>
+<button id="no">No</button>
+</div>
+</div>
+
+<!-- Popup -->
+<div id="popup" class="popup"></div>
+
+<!-- Music -->
+<audio id="music" loop>
+<source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mp3">
+</audio>
+
+<script>
+
+// Floating hearts
+for(let i=0;i<20;i++){
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML="❤";
+h.style.left=Math.random()*100+"vw";
+h.style.animationDuration=(3+Math.random()*3)+"s";
+document.body.appendChild(h);
+}
+
+// Elements
+const start=document.getElementById("start");
+const letter=document.getElementById("letter");
+const textDiv=document.getElementById("text");
+const music=document.getElementById("music");
+
+// Start click
+start.onclick=()=>{
+start.classList.add("hidden");
+letter.classList.remove("hidden");
+music.play();
+typeText();
+};
+
+// FULL POEM (UNCHANGED)
+const poem = `Hey Asmi,
+
+I wish i could make you see how beautifull u are -- I know that you don't see it, and you probably won't believe me anyway, but I spoke to the sunrise this morning and it told me it was jealous of your smile, the way it can brighten even the places that haven't seen the sun in a while. I know that you don't see it, and you probably won't believe me anyway, but I've heard whispers from the songbirds that they've been feeling insecure ever since they caught wind of your voice in their ears. And I know that you don't see it, and you probably won't believe me anyway, but the sea's been awfully still ever since it saw you move. If the moon controls the tide, I'm certain you control the moon. I know that you don't see it, and you probably won't believe me anyway, but if I could give you my eyes and ears, if you could listen to the rumors that I do, you'd hear the whole world catch its breath at the mere existence of you.`;
+
+// Typing effect (FAST)
+let i=0;
+function typeText(){
+if(i<poem.length){
+textDiv.innerHTML += poem.charAt(i);
+i++;
+setTimeout(typeText,10);
+}
+}
+
+// Envelope
+const envelope=document.getElementById("envelope");
+const question=document.getElementById("question");
+
+envelope.onclick=()=>{
+envelope.classList.add("open");
+setTimeout(()=>{
+letter.classList.add("hidden");
+question.classList.remove("hidden");
+},1500);
+};
+
+// Buttons
+const yes=document.getElementById("yes");
+const no=document.getElementById("no");
+const popup=document.getElementById("popup");
+
+let noClicked=false;
+
+yes.onclick=()=>{
+popup.style.display="block";
+popup.innerHTML=`
+<h3>Hubby is happy 😌</h3>
+<p>14th Aug will always be my favourite day 💖</p>
+<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif">
+<p>Yipeeee!!! 🐱</p>
+`;
+};
+
+no.onclick=()=>{
+if(!noClicked){
+popup.style.display="block";
+popup.innerHTML=`
+<p>beautiful kitna code khogi pls maan jao naa 🥺</p>
+<img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+<img src="https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif">
+`;
+noClicked=true;
+}else{
+const x=Math.random()*300-150;
+const y=Math.random()*200-100;
+no.style.transform=`translate(${x}px,${y}px)`;
+}
+};
+
+</script>
+
+</body>
+</html>
