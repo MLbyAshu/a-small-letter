@@ -11,16 +11,28 @@
 
 body{
 margin:0;
+font-family:'Poppins';
 background:#0f0f1a;
 color:white;
-font-family:'Poppins';
-overflow-y:auto;
+overflow:hidden;
 }
 
-/* Center */
-.center{
+/* Screens */
+.screen{
+position:absolute;
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 text-align:center;
-padding:40px 20px;
+transition:0.8s;
+}
+
+.hidden{
+opacity:0;
+pointer-events:none;
 }
 
 /* Start */
@@ -28,29 +40,16 @@ padding:40px 20px;
 font-family:'Great Vibes';
 font-size:40px;
 cursor:pointer;
-margin-top:100px;
-}
-
-/* Letter */
-#text{
-font-family:'Great Vibes';
-font-size:24px;
-line-height:1.7;
-max-width:700px;
-margin:auto;
-white-space:pre-line;
 }
 
 /* Envelope */
 .envelope{
-width:200px;
-height:130px;
+width:220px;
+height:140px;
 background:#ff7aa2;
-margin:40px auto;
-border-radius:6px;
-cursor:pointer;
+border-radius:8px;
 position:relative;
-display:none;
+cursor:pointer;
 }
 
 .envelope:before{
@@ -60,20 +59,49 @@ width:100%;
 height:100%;
 background:#ff9eb5;
 clip-path:polygon(0 0,50% 60%,100% 0);
-transition:0.5s;
+transition:0.6s;
 }
 
-.envelope.open:before{
+.open:before{
 transform:rotateX(180deg);
 }
 
-/* Question */
-#question{
-display:none;
-text-align:center;
-margin-top:100px;
+/* Letter */
+.letter{
+position:absolute;
+background:white;
+color:black;
+width:80%;
+max-width:600px;
+height:70%;
+padding:20px;
+border-radius:10px;
+overflow-y:auto;
+font-family:'Great Vibes';
+font-size:22px;
+line-height:1.6;
+top:100%;
+transition:0.8s;
 }
 
+.show-letter{
+top:15%;
+}
+
+/* Next button */
+.next-btn{
+margin-top:20px;
+font-size:30px;
+cursor:pointer;
+animation:bounce 1.5s infinite;
+}
+
+@keyframes bounce{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+}
+
+/* Buttons */
 button{
 padding:12px 25px;
 border:none;
@@ -84,26 +112,12 @@ font-size:16px;
 }
 
 #yes{background:#ff4d88;color:white;}
-#no{background:#ccc;position:relative;}
+#no{background:#ccc;position:absolute;}
 
-/* Popup */
-.popup{
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:white;
-color:black;
-padding:20px;
-border-radius:10px;
-display:none;
-text-align:center;
-z-index:1000;
-}
-
-.popup img{
-width:120px;
-margin:10px;
+/* Success screen */
+.success{
+font-family:'Great Vibes';
+font-size:35px;
 }
 
 </style>
@@ -111,105 +125,91 @@ margin:10px;
 
 <body>
 
-<div class="center">
-
-<div id="start">
-Letter for you 💌<br><br>
-<small>Tap to begin</small>
+<!-- Screen 1 -->
+<div class="screen" id="screen1">
+<div id="start">Letter for you 💌<br><small>Tap to begin</small></div>
 </div>
 
-<div id="text"></div>
-
+<!-- Screen 2 -->
+<div class="screen hidden" id="screen2">
 <div class="envelope" id="envelope"></div>
 
-<div id="question">
-<h1 style="font-family:Great Vibes;">Hey cutie 😊</h1>
-<p>Can we be friends?</p>
+<div class="letter" id="letter">
 
+Hey Asmi,
+
+I wish i could make you see how beautifull u are -- I know that you don't see it, and you probably won't believe me anyway, but I spoke to the sunrise this morning and it told me it was jealous of your smile, the way it can brighten even the places that haven't seen the sun in a while. I know that you don't see it, and you probably won't believe me anyway, but I've heard whispers from the songbirds that they've been feeling insecure ever since they caught wind of your voice in their ears. And I know that you don't see it, and you probably won't believe me anyway, but the sea's been awfully still ever since it saw you move. If the moon controls the tide, I'm certain you control the moon. I know that you don't see it, and you probably won't believe me anyway, but if I could give you my eyes and ears, if you could listen to the rumors that I do, you'd hear the whole world catch its breath at the mere existence of you.
+
+<div class="next-btn" id="next">❤️</div>
+
+</div>
+</div>
+
+<!-- Screen 3 -->
+<div class="screen hidden" id="screen3">
+<h1 style="font-family:Great Vibes;">Can we be friends? 😊</h1>
+
+<div style="position:relative;">
 <button id="yes">Yes 💖</button>
 <button id="no">No</button>
 </div>
-
 </div>
 
-<div id="popup" class="popup"></div>
+<!-- Screen 4 -->
+<div class="screen hidden" id="screen4">
+<div class="success">
+Hoorayyy Yipeeee 😍<br><br>
+Mujhe pata tha tum maan jaogi 💖
+</div>
+<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="150">
+</div>
 
 <script>
 
+// Elements
+const s1=document.getElementById("screen1");
+const s2=document.getElementById("screen2");
+const s3=document.getElementById("screen3");
+const s4=document.getElementById("screen4");
+
 const start=document.getElementById("start");
-const textDiv=document.getElementById("text");
 const envelope=document.getElementById("envelope");
-const question=document.getElementById("question");
-const popup=document.getElementById("popup");
+const letter=document.getElementById("letter");
+const next=document.getElementById("next");
+
 const yes=document.getElementById("yes");
 const no=document.getElementById("no");
 
-// FULL POEM
-const poem = `Hey Asmi,
-
-I wish i could make you see how beautifull u are -- I know that you don't see it, and you probably won't believe me anyway, but I spoke to the sunrise this morning and it told me it was jealous of your smile, the way it can brighten even the places that haven't seen the sun in a while. I know that you don't see it, and you probably won't believe me anyway, but I've heard whispers from the songbirds that they've been feeling insecure ever since they caught wind of your voice in their ears. And I know that you don't see it, and you probably won't believe me anyway, but the sea's been awfully still ever since it saw you move. If the moon controls the tide, I'm certain you control the moon. I know that you don't see it, and you probably won't believe me anyway, but if I could give you my eyes and ears, if you could listen to the rumors that I do, you'd hear the whole world catch its breath at the mere existence of you.`;
-
-// Typing (SLOW + readable)
-let i=0;
-function typeText(){
-if(i<poem.length){
-textDiv.innerHTML += poem.charAt(i);
-i++;
-window.scrollTo(0, document.body.scrollHeight);
-setTimeout(typeText,35);
-}else{
-envelope.style.display="block";
-}
-}
-
 // Start
 start.onclick=()=>{
-start.style.display="none";
-typeText();
+s1.classList.add("hidden");
+s2.classList.remove("hidden");
 };
 
-// Envelope click → next page
+// Open envelope → show letter
 envelope.onclick=()=>{
 envelope.classList.add("open");
-setTimeout(()=>{
-question.style.display="block";
-window.scrollTo(0, document.body.scrollHeight);
-},800);
+letter.classList.add("show-letter");
 };
 
-// YES
+// Next page
+next.onclick=()=>{
+s2.classList.add("hidden");
+s3.classList.remove("hidden");
+};
+
+// YES → success page
 yes.onclick=()=>{
-popup.style.display="block";
-popup.innerHTML=`
-<h3>Hoorayyy Yipeeee 😍</h3>
-<p>mujhe pata tha tum maan jaogi 💖</p>
-<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif">
-`;
+s3.classList.add("hidden");
+s4.classList.remove("hidden");
 };
 
-// NO
-let noClicked=false;
-
-no.onclick=()=>{
-if(!noClicked){
-popup.style.display="block";
-popup.innerHTML=`
-<p>beautiful kitna code likhwaogi pls maan jao na 🥺</p>
-<img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
-<br><br>
-<button onclick="closePopup()">Back</button>
-`;
-noClicked=true;
-}else{
+// NO → run away
+no.onmouseover=()=>{
 const x=Math.random()*200-100;
-const y=Math.random()*100-50;
+const y=Math.random()*200-100;
 no.style.transform=`translate(${x}px,${y}px)`;
-}
 };
-
-function closePopup(){
-popup.style.display="none";
-}
 
 </script>
 
