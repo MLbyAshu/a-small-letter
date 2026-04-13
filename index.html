@@ -12,8 +12,7 @@
 body{
 margin:0;
 font-family:'Poppins';
-background:#0f0f1a;
-color:white;
+background:#ffe4ec;
 overflow:hidden;
 }
 
@@ -26,73 +25,58 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-text-align:center;
 transition:0.8s;
-}
-
-.hidden{
-opacity:0;
-pointer-events:none;
 }
 
 /* Start */
 #start{
 font-family:'Great Vibes';
-font-size:40px;
+font-size:42px;
 cursor:pointer;
+color:#d63384;
 }
 
-/* Envelope */
-.envelope{
-width:220px;
-height:140px;
-background:#ff7aa2;
-border-radius:8px;
-position:relative;
+/* Envelope Image */
+.envelope-img{
+width:260px;
 cursor:pointer;
+transition:0.5s;
 }
 
-.envelope:before{
-content:"";
-position:absolute;
-width:100%;
-height:100%;
-background:#ff9eb5;
-clip-path:polygon(0 0,50% 60%,100% 0);
-transition:0.6s;
-}
-
-.open:before{
-transform:rotateX(180deg);
+.envelope-img:hover{
+transform:scale(1.05);
 }
 
 /* Letter */
 .letter{
 position:absolute;
-background:white;
-color:black;
 width:80%;
-max-width:600px;
-height:70%;
-padding:20px;
-border-radius:10px;
-overflow-y:auto;
+max-width:500px;
+background:#fff0f5;
+padding:25px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
 font-family:'Great Vibes';
 font-size:22px;
 line-height:1.6;
 top:100%;
+opacity:0;
 transition:0.8s;
+overflow-y:auto;
+max-height:70vh;
 }
 
 .show-letter{
-top:15%;
+top:20%;
+opacity:1;
 }
 
-/* Next button */
-.next-btn{
+/* Next Button */
+.next{
 margin-top:20px;
 font-size:30px;
 cursor:pointer;
+color:#ff4d88;
 animation:bounce 1.5s infinite;
 }
 
@@ -101,7 +85,12 @@ animation:bounce 1.5s infinite;
 50%{transform:translateY(-10px);}
 }
 
-/* Buttons */
+/* Question */
+#question{
+display:none;
+text-align:center;
+}
+
 button{
 padding:12px 25px;
 border:none;
@@ -114,10 +103,13 @@ font-size:16px;
 #yes{background:#ff4d88;color:white;}
 #no{background:#ccc;position:absolute;}
 
-/* Success screen */
-.success{
+/* Success */
+#success{
+display:none;
 font-family:'Great Vibes';
-font-size:35px;
+font-size:32px;
+text-align:center;
+color:#d63384;
 }
 
 </style>
@@ -125,14 +117,15 @@ font-size:35px;
 
 <body>
 
-<!-- Screen 1 -->
-<div class="screen" id="screen1">
+<!-- Start -->
+<div class="screen" id="s1">
 <div id="start">Letter for you 💌<br><small>Tap to begin</small></div>
 </div>
 
-<!-- Screen 2 -->
-<div class="screen hidden" id="screen2">
-<div class="envelope" id="envelope"></div>
+<!-- Envelope Screen -->
+<div class="screen" id="s2" style="display:none;">
+
+<img src="envelope.png" class="envelope-img" id="envelope">
 
 <div class="letter" id="letter">
 
@@ -140,13 +133,14 @@ Hey Asmi,
 
 I wish i could make you see how beautifull u are -- I know that you don't see it, and you probably won't believe me anyway, but I spoke to the sunrise this morning and it told me it was jealous of your smile, the way it can brighten even the places that haven't seen the sun in a while. I know that you don't see it, and you probably won't believe me anyway, but I've heard whispers from the songbirds that they've been feeling insecure ever since they caught wind of your voice in their ears. And I know that you don't see it, and you probably won't believe me anyway, but the sea's been awfully still ever since it saw you move. If the moon controls the tide, I'm certain you control the moon. I know that you don't see it, and you probably won't believe me anyway, but if I could give you my eyes and ears, if you could listen to the rumors that I do, you'd hear the whole world catch its breath at the mere existence of you.
 
-<div class="next-btn" id="next">❤️</div>
+<div class="next" id="next">❤️</div>
 
 </div>
 </div>
 
-<!-- Screen 3 -->
-<div class="screen hidden" id="screen3">
+<!-- Question -->
+<div class="screen" id="s3">
+<div id="question">
 <h1 style="font-family:Great Vibes;">Can we be friends? 😊</h1>
 
 <div style="position:relative;">
@@ -154,10 +148,11 @@ I wish i could make you see how beautifull u are -- I know that you don't see it
 <button id="no">No</button>
 </div>
 </div>
+</div>
 
-<!-- Screen 4 -->
-<div class="screen hidden" id="screen4">
-<div class="success">
+<!-- Success -->
+<div class="screen" id="s4">
+<div id="success">
 Hoorayyy Yipeeee 😍<br><br>
 Mujhe pata tha tum maan jaogi 💖
 </div>
@@ -166,45 +161,45 @@ Mujhe pata tha tum maan jaogi 💖
 
 <script>
 
-// Elements
-const s1=document.getElementById("screen1");
-const s2=document.getElementById("screen2");
-const s3=document.getElementById("screen3");
-const s4=document.getElementById("screen4");
+const s1=document.getElementById("s1");
+const s2=document.getElementById("s2");
+const s3=document.getElementById("s3");
+const s4=document.getElementById("s4");
 
 const start=document.getElementById("start");
 const envelope=document.getElementById("envelope");
 const letter=document.getElementById("letter");
 const next=document.getElementById("next");
+const question=document.getElementById("question");
 
 const yes=document.getElementById("yes");
 const no=document.getElementById("no");
 
 // Start
 start.onclick=()=>{
-s1.classList.add("hidden");
-s2.classList.remove("hidden");
+s1.style.display="none";
+s2.style.display="flex";
 };
 
 // Open envelope → show letter
 envelope.onclick=()=>{
-envelope.classList.add("open");
 letter.classList.add("show-letter");
 };
 
-// Next page
+// Next
 next.onclick=()=>{
-s2.classList.add("hidden");
-s3.classList.remove("hidden");
+s2.style.display="none";
+s3.style.display="flex";
+question.style.display="block";
 };
 
-// YES → success page
+// YES
 yes.onclick=()=>{
-s3.classList.add("hidden");
-s4.classList.remove("hidden");
+s3.style.display="none";
+s4.style.display="flex";
 };
 
-// NO → run away
+// NO runs away
 no.onmouseover=()=>{
 const x=Math.random()*200-100;
 const y=Math.random()*200-100;
